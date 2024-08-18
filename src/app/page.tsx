@@ -10,6 +10,7 @@ export default function Home() {
         illum iste veritatis quidem, tempore hic ipsam temporibus, sed provident
         repellat recusandae?
       </p>
+      <h3>Latest Posts</h3>
     </main>
   );
 }
