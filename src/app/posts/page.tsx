@@ -5,6 +5,8 @@ import prisma from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
+// npx prisma studio
+
 export default async function Page({
   searchParams,
 }: {
@@ -30,7 +32,6 @@ export default async function Page({
       </Suspense>
 
       <div className="flex justify-center gap-2 mt-auto">
-        {/* Previous Button */}
         <Link
           href={`/posts?page=${page - 1}`}
           className={`px-4 py-2 rounded ${
@@ -42,7 +43,6 @@ export default async function Page({
           Previous
         </Link>
 
-        {/* Page Number Buttons */}
         {[...Array(totalPages)].map((_, index) => {
           const pageNumber = index + 1;
           return (
@@ -60,7 +60,6 @@ export default async function Page({
           );
         })}
 
-        {/* Next Button */}
         <Link
           href={`/posts?page=${page + 1}`}
           className={`px-4 py-2 rounded ${
