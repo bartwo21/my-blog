@@ -1,4 +1,6 @@
+import PostActions from "@/components/postAction";
 import prisma from "@/lib/db";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -9,9 +11,25 @@ export default async function Page({
     id: string;
   };
 }) {
+  const { getUser } = getKindeServerSession();
+
+  const user = await getUser();
+
   const post = await prisma.post.findUnique({
     where: { id: parseInt(params.id) },
   });
+
+  const prismaUser = await prisma.user.findFirst({
+    where: { email: user?.email || "" },
+  });
+
+  const loggedUserPosts = await prisma.post.findMany({
+    where: { user: { email: prismaUser?.email || "" } },
+  });
+
+  const isUserPost = loggedUserPosts?.some(
+    (userPost: any) => userPost.id === post?.id
+  );
 
   const categories = post?.categories
     ? post.categories.split(",").map((cat: any) => cat.trim())
@@ -19,7 +37,7 @@ export default async function Page({
 
   if (!post) notFound();
   return (
-    <div className="border border-zinc-700 p-6 rounded flex flex-col justify-between gap-3 text-start mx-7 my-16 flex-grow">
+    <div className="relative border border-zinc-700 p-6 rounded flex flex-col justify-between gap-3 text-start mx-7 my-16 flex-grow">
       <p className="text-xs opacity-60 overflow-hidden text-ellipsis whitespace-normal">
         {post.author + " · " + new Date(post.createdAt).toLocaleDateString()}
       </p>
@@ -49,6 +67,11 @@ export default async function Page({
           </span>
         ))}
       </div>
+      {isUserPost && (
+        <div className="absolute top-0 left-0 right-0 flex justify-end items-center gap-3 p-2 rounded-b">
+          <PostActions postId={post.id} />
+        </div>
+      )}
     </div>
   );
 }

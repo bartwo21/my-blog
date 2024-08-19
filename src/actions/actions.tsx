@@ -42,3 +42,25 @@ export async function deletePost(id: number) {
 
   revalidatePath("/posts");
 }
+
+export async function updatePost(
+  id: number,
+  formData: FormData,
+  imageUrl: string
+) {
+  const title = formData.get("title") as string;
+  const body = formData.get("body") as string;
+  const categories = formData.get("categories") as string;
+
+  await prisma.post.update({
+    where: { id },
+    data: {
+      title,
+      body,
+      categories,
+      image: imageUrl,
+    },
+  });
+
+  redirect(`/posts/${id}`);
+}

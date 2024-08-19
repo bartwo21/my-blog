@@ -1,7 +1,7 @@
 export default function LoadingComponent() {
   return (
     <div className="flex items-center justify-center">
-      <div className="grid place-items-center place-content-center rounded-lg p-6 lg:overflow-visible">
+      <div className="grid place-items-center place-content-center rounded-lg lg:overflow-visible">
         <svg
           className="text-gray-300 animate-spin"
           viewBox="0 0 64 64"

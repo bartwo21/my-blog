@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
-import { deletePost } from "@/actions/actions";
-import LoadingComponent from "./loadingComponent";
+import React from "react";
+import PostActions from "./postAction";
 
 export default function PostList({
   loggedUserPosts,
@@ -13,21 +12,6 @@ export default function PostList({
   loggedUserPosts?: any;
   posts?: any;
 }) {
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const handleDelete = async (id: number) => {
-    try {
-      setIsDeleting(true);
-      await deletePost(id);
-    } catch {
-      setIsDeleting(false);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  const handleEdit = (id: number) => {};
-
   return (
     <div className="flex flex-wrap gap-4 justify-center">
       {posts?.map((post: any) => {
@@ -82,24 +66,7 @@ export default function PostList({
             </Link>
             {isUserPost && (
               <div className="absolute bottom-0 left-0 right-0 flex justify-end items-center gap-3 p-2 rounded-b">
-                {isDeleting ? (
-                  <div className="h-12 w-10">
-                    <LoadingComponent />
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => handleDelete(post.id)}
-                    className="text-red-900 hover:text-red-500 transition-colors"
-                  >
-                    Delete
-                  </button>
-                )}
-                <button
-                  onClick={() => handleEdit(post.id)}
-                  className="text-blue-900 hover:text-blue-500 transition-colors"
-                >
-                  Edit
-                </button>
+                <PostActions postId={post.id} />
               </div>
             )}
           </div>
