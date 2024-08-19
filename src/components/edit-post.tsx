@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { updatePost } from "@/actions/actions";
 import LoadingComponent from "./loadingComponent";
 import { UploadButton } from "@/utils/uploadthing";
+import toast from "react-hot-toast";
 
 const availableCategories = [
   "Tech",
@@ -67,6 +68,7 @@ export default function EditPost({ post }: { post: any }) {
       console.error("Failed to update post:", error);
     } finally {
       setIsLoading(false);
+      toast.success("Post updated successfully!");
     }
   };
 
@@ -135,23 +137,22 @@ export default function EditPost({ post }: { post: any }) {
                 className="rounded object-contain"
                 unoptimized
               />
-              <UploadButton
-                className="mr-auto mt-3"
-                appearance={{
-                  allowedContent: "hidden",
-                  button:
-                    "bg-zinc-800 hover:bg-zinc-600 transition-colors mr-auto",
-                }}
-                endpoint="imageUploader"
-                onClientUploadComplete={(res) => {
-                  if (res && res.length > 0) {
-                    const imageUrl = res[0].url;
-                    setImage(imageUrl);
-                  }
-                }}
-              />
             </div>
           )}
+          <UploadButton
+            className="mr-auto mt-2"
+            appearance={{
+              allowedContent: "hidden",
+              button: "bg-zinc-800 hover:bg-zinc-600 transition-colors mr-auto",
+            }}
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              if (res && res.length > 0) {
+                const imageUrl = res[0].url;
+                setImage(imageUrl);
+              }
+            }}
+          />
         </div>
         <button
           type="submit"

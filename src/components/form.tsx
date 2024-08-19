@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import LoadingComponent from "./loadingComponent";
 import { UploadButton } from "@/utils/uploadthing";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 const categories = [
   "Tech",
@@ -61,6 +62,7 @@ export default function Form() {
       setError("An error occurred while creating the post.");
     } finally {
       setIsSubmitting(false);
+      toast.success("Post created successfully!");
     }
   };
 

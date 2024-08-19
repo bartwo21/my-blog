@@ -6,9 +6,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-// npx prisma studio
-// npx prisma db push
-
 export default async function Page({
   searchParams,
 }: {
@@ -16,13 +13,15 @@ export default async function Page({
 }) {
   const page = parseInt(searchParams.page as string) || 1;
 
-  const postsCount = await prisma.post.count();
+  const postsCount = await prisma.post.count({
+    where: { deletedAt: null },
+  });
+
   const postsPerPage = 6;
   const totalPages = Math.ceil(postsCount / postsPerPage);
   const currentPage = Math.max(page, 1);
 
   const { getUser } = getKindeServerSession();
-
   const user = await getUser();
 
   const prismaUser = await prisma.user.findFirst({
@@ -34,6 +33,7 @@ export default async function Page({
   });
 
   const posts = await prisma.post.findMany({
+    where: { deletedAt: null },
     skip: (currentPage - 1) * postsPerPage,
     take: postsPerPage,
     orderBy: { createdAt: "desc" },
@@ -55,7 +55,7 @@ export default async function Page({
       <div className="flex justify-center gap-2 mt-auto">
         <Link
           href={`/posts?page=${page - 1}`}
-          className={`px-4 py-2 rounded  ${
+          className={`px-4 py-2 rounded ${
             page === 1
               ? "bg-gray-700 text-gray-800 cursor-not-allowed"
               : "bg-zinc-700 text-white hover:bg-gray-700 transition-colors"

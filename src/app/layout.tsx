@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import Container from "@/components/container";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import prisma from "@/lib/db";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,6 +43,7 @@ export default async function RootLayout({
       <body
         className={`${inter.className} text-zinc-300 bg-zinc-900 bg-opacity-95`}
       >
+        <Toaster position="bottom-left" />
         <Container>
           <Header isAuth={isAuth} user={user} />
 

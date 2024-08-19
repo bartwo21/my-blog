@@ -12,9 +12,11 @@ export default function PostList({
   loggedUserPosts?: any;
   posts?: any;
 }) {
+  const filteredPosts = posts?.filter((post: any) => !post.deletedAt);
+
   return (
     <div className="flex flex-wrap gap-4 justify-center">
-      {posts?.map((post: any) => {
+      {filteredPosts?.map((post: any) => {
         const categories = post.categories
           .split(",")
           .map((cat: any) => cat.trim());

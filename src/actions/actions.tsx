@@ -36,8 +36,18 @@ export async function createPost(formData: FormData, imageUrl: string) {
 }
 
 export async function deletePost(id: number) {
-  await prisma.post.delete({
+  await prisma.post.update({
     where: { id },
+    data: { deletedAt: new Date() },
+  });
+
+  revalidatePath("/posts");
+}
+
+export async function restorePost(id: number) {
+  await prisma.post.update({
+    where: { id },
+    data: { deletedAt: null },
   });
 
   revalidatePath("/posts");
