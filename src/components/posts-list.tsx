@@ -24,6 +24,8 @@ export default function PostList({
           (userPost: any) => userPost.id === post.id
         );
 
+        console.log(categories[0]);
+
         return (
           <div
             key={post.id}
@@ -55,14 +57,15 @@ export default function PostList({
                   {post.title}
                 </h2>
                 <div className="flex flex-wrap gap-2 mt-auto">
-                  {categories.map((category: string, index: number) => (
-                    <span
-                      key={index}
-                      className="bg-blue-200 text-blue-800 text-xs font-medium py-1 px-2 rounded"
-                    >
-                      {category}
-                    </span>
-                  ))}
+                  {categories[0] &&
+                    categories.map((category: string, index: number) => (
+                      <span
+                        key={index}
+                        className="bg-blue-200 text-blue-800 text-xs font-medium py-1 px-2 rounded"
+                      >
+                        {category}
+                      </span>
+                    ))}
                 </div>
               </div>
             </Link>

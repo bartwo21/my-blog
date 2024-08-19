@@ -13,7 +13,7 @@ export default async function Page({
     where: { id: parseInt(params.id) },
   });
 
-  if (!post) notFound();
+  if (!post || post.deletedAt) notFound();
 
   return <EditPost post={post} />;
 }

@@ -35,7 +35,7 @@ export default async function Page({
     ? post.categories.split(",").map((cat: any) => cat.trim())
     : [];
 
-  if (!post) notFound();
+  if (!post || post.deletedAt) notFound();
   return (
     <div className="relative border border-zinc-700 p-6 rounded flex flex-col justify-between gap-3 text-start mx-7 my-16 flex-grow">
       <p className="text-xs opacity-60 overflow-hidden text-ellipsis whitespace-normal">

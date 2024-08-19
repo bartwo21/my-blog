@@ -5,9 +5,11 @@ import Link from "next/link";
 import { deletePost, restorePost } from "@/actions/actions";
 import LoadingComponent from "./loadingComponent";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function PostActions({ postId }: { postId: number }) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
   const revertDelete = async () => {
     setIsDeleting(true);
@@ -19,6 +21,7 @@ export default function PostActions({ postId }: { postId: number }) {
       toast.error("Failed to restore post.");
     } finally {
       setIsDeleting(false);
+      toast.dismiss();
     }
   };
 
@@ -44,6 +47,7 @@ export default function PostActions({ postId }: { postId: number }) {
           </div>
         );
       });
+      router.push("/posts");
     }
   };
 
