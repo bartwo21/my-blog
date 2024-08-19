@@ -6,6 +6,9 @@ const nextConfig = {
         protocol: "https",
         hostname: "bytegrad.com",
       },
+      {
+        hostname: "utfs.io",
+      },
     ],
   },
 };

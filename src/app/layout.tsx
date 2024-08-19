@@ -18,7 +18,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isAuthenticated } = getKindeServerSession();
+  const { isAuthenticated, getUser } = getKindeServerSession();
+  const user = await getUser();
   const isAuth = await isAuthenticated();
   return (
     <html lang="en">
@@ -26,7 +27,7 @@ export default async function RootLayout({
         className={`${inter.className} text-zinc-300 bg-zinc-900 bg-opacity-95`}
       >
         <Container>
-          <Header isAuth={isAuth} />
+          <Header isAuth={isAuth} user={user} />
 
           {children}
           <Footer />

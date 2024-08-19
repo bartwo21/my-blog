@@ -5,7 +5,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export async function createPost(formData: FormData) {
+export async function createPost(formData: FormData, imageUrl: string) {
   const { isAuthenticated } = getKindeServerSession();
 
   if (!isAuthenticated) {
@@ -23,6 +23,7 @@ export async function createPost(formData: FormData) {
       body,
       author,
       categories: categories.join(", "),
+      image: imageUrl,
     },
   });
 

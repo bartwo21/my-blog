@@ -1,3 +1,4 @@
+import { withUt } from "uploadthing/tw";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -17,4 +18,5 @@ const config: Config = {
   },
   plugins: [],
 };
-export default config;
+
+export default withUt(config);

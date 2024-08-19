@@ -1,4 +1,5 @@
 import prisma from "@/lib/db";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 export default async function Page({
@@ -26,6 +27,18 @@ export default async function Page({
         {post.title}
       </h2>
       <p className="text-sm whitespace-normal break-words">{post.body}</p>
+      {post.image && (
+        <div className="h-full w-full max-w-fit">
+          <Image
+            src={post.image}
+            alt={post.title}
+            height="100"
+            width="100"
+            className="rounded h-full max-h-[500px] w-full object-contain"
+            unoptimized
+          />
+        </div>
+      )}
       <div className="flex flex-wrap gap-2 mt-auto h-full">
         {categories.map((category: string, index: number) => (
           <span

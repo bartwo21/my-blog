@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 // npx prisma studio
+// npx prisma db push
 
 export default async function Page({
   searchParams,

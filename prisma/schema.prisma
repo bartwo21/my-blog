@@ -11,11 +11,12 @@ datasource db {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
+  id         Int      @id @default(autoincrement())
+  title      String
   categories String?
-  author    String
-  body      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  author     String
+  body       String
+  image      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

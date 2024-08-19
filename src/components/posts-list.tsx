@@ -1,4 +1,5 @@
 import prisma from "@/lib/db";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -9,19 +10,17 @@ export default async function PostList({ page }: { page: number }) {
     skip: (page - 1) * postsPerPage,
     take: postsPerPage,
   });
-
   return (
     <div className="flex flex-wrap gap-4 justify-center">
       {posts.map((post: any) => {
         const categories = post.categories
           .split(",")
           .map((cat: any) => cat.trim());
-
         return (
           <Link
             href={`/posts/${post.id}`}
             key={post.id}
-            className="flex-none md:w-[31%] sm:w-[48%] w-[100%] h-[200px]"
+            className="flex-none md:w-[31%] sm:w-[48%] w-[100%] h-[250px]"
           >
             <div className="box border border-zinc-700 p-3 rounded flex flex-col h-full gap-3 text-start">
               <p className="text-xs opacity-60 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -29,6 +28,18 @@ export default async function PostList({ page }: { page: number }) {
                   " · " +
                   new Date(post.createdAt).toLocaleDateString()}
               </p>
+              {post.image && (
+                <div className="relative w-full">
+                  <Image
+                    src={post.image}
+                    alt={post.title}
+                    height="50"
+                    width="50"
+                    className="rounded h-28 w-full object-cover"
+                    unoptimized
+                  />
+                </div>
+              )}
               <h2 className="text-xl font-bold overflow-hidden text-ellipsis whitespace-nowrap">
                 {post.title}
               </h2>

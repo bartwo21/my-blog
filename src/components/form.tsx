@@ -3,6 +3,8 @@
 import { createPost } from "@/actions/actions";
 import React, { useState } from "react";
 import LoadingComponent from "./loadingComponent";
+import { UploadButton } from "@/utils/uploadthing";
+import Image from "next/image";
 
 const categories = [
   "Tech",
@@ -21,6 +23,7 @@ export default function Form() {
     body: "",
     selectedCategories: [] as string[],
   });
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +35,7 @@ export default function Form() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
+  console.log(imageUrl);
   const handleCheckboxChange = (category: string, checked: boolean) => {
     setFormData((prev) => {
       const newCategories = checked
@@ -51,8 +54,9 @@ export default function Form() {
     const form = new FormData(e.currentTarget);
 
     try {
-      await createPost(form);
+      await createPost(form, imageUrl || "");
       setFormData({ title: "", author: "", body: "", selectedCategories: [] });
+      setImageUrl(null);
     } catch {
       setError("An error occurred while creating the post.");
     } finally {
@@ -62,9 +66,10 @@ export default function Form() {
 
   return (
     <form
-      className="flex flex-col max-w-[400px] mx-auto mt-10 gap-3"
+      className="flex flex-col max-w-[400px] mx-auto mt-10 gap-3 mb-10"
       onSubmit={handleSubmit}
     >
+      <h3 className="w-full flex">Title</h3>
       <input
         type="text"
         name="title"
@@ -74,6 +79,7 @@ export default function Form() {
         required
         className="border rounded px-3 h-10 text-zinc-700"
       />
+      <h3 className="w-full flex">Author</h3>
       <input
         type="text"
         name="author"
@@ -112,6 +118,37 @@ export default function Form() {
           ))}
         </div>
       </div>
+      <h3 className="w-full flex">Image</h3>
+      <UploadButton
+        className="mr-auto"
+        appearance={{
+          container: "w-full",
+          button: "bg-zinc-500 w-full",
+        }}
+        endpoint="imageUploader"
+        onClientUploadComplete={(res) => {
+          if (res && res.length > 0) {
+            const imageUrl = res[0].url;
+            setImageUrl(imageUrl);
+          }
+        }}
+        onUploadError={(error: Error) => {
+          alert(`ERROR! ${error.message}`);
+        }}
+      />
+      {imageUrl && (
+        <div className="relative w-full">
+          <Image
+            src={imageUrl}
+            alt="Preview Image"
+            height="50"
+            width="50"
+            className="rounded h-28 w-full object-cover"
+            unoptimized
+          />
+        </div>
+      )}
+      <h3 className="w-full flex">Post Body</h3>
       <textarea
         name="body"
         value={formData.body}
