@@ -67,7 +67,7 @@ export default function Header({
         />
       </Link>
       <nav>
-        <ul className="flex gap-x-5 text-s">
+        <ul className="flex gap-x-5 text-s items-center justify-center">
           {links.map(({ href, label }) => (
             <li key={`${href}${label}`}>
               <Link
@@ -83,9 +83,18 @@ export default function Header({
           {isAuth ? (
             <li className="relative" ref={dropdownRef}>
               <button
-                className="text-zinc-400 flex items-center"
+                className="text-zinc-400 flex items-center justify-center"
                 onClick={toggleDropdown}
               >
+                {user.picture && (
+                  <Image
+                    src={user.picture}
+                    alt={user.given_name}
+                    width="30"
+                    height="30"
+                    className="rounded-full mr-2"
+                  />
+                )}
                 {user.given_name}
                 <svg
                   className={`w-4 h-4 ml-1 transition-transform ${

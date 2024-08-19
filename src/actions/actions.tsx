@@ -6,16 +6,20 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createPost(formData: FormData, imageUrl: string) {
-  const { isAuthenticated } = getKindeServerSession();
+  const { isAuthenticated, getUser } = getKindeServerSession();
 
   if (!isAuthenticated) {
     redirect("/login");
   }
-
+  const user = await getUser();
   const title = formData.get("title") as string;
   const body = formData.get("body") as string;
   const author = formData.get("author") as string;
   const categories = formData.getAll("categories") as string[];
+
+  const prismaUser = await prisma.user.findFirst({
+    where: { email: user?.email ?? "" },
+  });
 
   await prisma.post.create({
     data: {
@@ -24,7 +28,16 @@ export async function createPost(formData: FormData, imageUrl: string) {
       author,
       categories: categories.join(", "),
       image: imageUrl,
+      userId: prismaUser!.id,
     },
+  });
+
+  revalidatePath("/posts");
+}
+
+export async function deletePost(id: number) {
+  await prisma.post.delete({
+    where: { id },
   });
 
   revalidatePath("/posts");

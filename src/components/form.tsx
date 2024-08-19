@@ -24,6 +24,7 @@ export default function Form() {
     selectedCategories: [] as string[],
   });
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,7 +36,6 @@ export default function Form() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  console.log(imageUrl);
   const handleCheckboxChange = (category: string, checked: boolean) => {
     setFormData((prev) => {
       const newCategories = checked
@@ -66,7 +66,7 @@ export default function Form() {
 
   return (
     <form
-      className="flex flex-col max-w-[400px] mx-auto mt-10 gap-3 mb-10"
+      className="flex flex-col max-w-[850px] mx-auto mt-2 px-5 gap-3 mb-10"
       onSubmit={handleSubmit}
     >
       <h3 className="w-full flex">Title</h3>
@@ -123,18 +123,24 @@ export default function Form() {
         className="mr-auto"
         appearance={{
           container: "w-full",
-          button: "bg-zinc-500 w-full",
+          button: "bg-zinc-500 w-full hover:bg-zinc-600 transition-colors",
         }}
         endpoint="imageUploader"
+        onBeforeUploadBegin={(files: File[]) => {
+          setIsUploadingImage(true);
+          return files;
+        }}
+        onUploadAborted={() => setIsUploadingImage(false)}
         onClientUploadComplete={(res) => {
           if (res && res.length > 0) {
             const imageUrl = res[0].url;
             setImageUrl(imageUrl);
+            setIsUploadingImage(false);
           }
         }}
-        onUploadError={(error: Error) => {
-          alert(`ERROR! ${error.message}`);
-        }}
+        // onUploadError={(error: Error) => {
+        //   alert(`ERROR! ${error.message}`);
+        // }}
       />
       {imageUrl && (
         <div className="relative w-full">
@@ -143,7 +149,7 @@ export default function Form() {
             alt="Preview Image"
             height="50"
             width="50"
-            className="rounded h-28 w-full object-cover"
+            className="rounded h-28 w-full object-contain"
             unoptimized
           />
         </div>
@@ -160,8 +166,10 @@ export default function Form() {
       />
       <button
         type="submit"
-        className="h-12 bg-zinc-500 px-5 rounded text-white flex items-center justify-center"
-        disabled={isSubmitting}
+        className={`h-12 bg-zinc-500 px-5 rounded text-white flex items-center justify-center hover:bg-zinc-600 transition-colors ${
+          isUploadingImage ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={isSubmitting || isUploadingImage}
       >
         {isSubmitting ? <LoadingComponent /> : "Create Post"}
       </button>

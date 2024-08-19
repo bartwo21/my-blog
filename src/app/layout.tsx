@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Container from "@/components/container";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import prisma from "@/lib/db";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,21 @@ export default async function RootLayout({
   const { isAuthenticated, getUser } = getKindeServerSession();
   const user = await getUser();
   const isAuth = await isAuthenticated();
+
+  if (isAuth) {
+    const userExists = await prisma.user.findFirst({
+      where: { email: user?.email ?? "" },
+    });
+
+    if (!userExists) {
+      await prisma.user.create({
+        data: {
+          email: user?.email ?? "",
+        },
+      });
+    }
+  }
+
   return (
     <html lang="en">
       <body

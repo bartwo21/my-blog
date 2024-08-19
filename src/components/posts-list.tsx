@@ -1,61 +1,108 @@
-import prisma from "@/lib/db";
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import { deletePost } from "@/actions/actions";
+import LoadingComponent from "./loadingComponent";
 
-const postsPerPage = 6;
+export default function PostList({
+  loggedUserPosts,
+  posts,
+}: {
+  loggedUserPosts?: any;
+  posts?: any;
+}) {
+  const [isDeleting, setIsDeleting] = useState(false);
 
-export default async function PostList({ page }: { page: number }) {
-  const posts = await prisma.post.findMany({
-    skip: (page - 1) * postsPerPage,
-    take: postsPerPage,
-  });
+  const handleDelete = async (id: number) => {
+    try {
+      setIsDeleting(true);
+      await deletePost(id);
+    } catch {
+      setIsDeleting(false);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleEdit = (id: number) => {};
+
   return (
     <div className="flex flex-wrap gap-4 justify-center">
-      {posts.map((post: any) => {
+      {posts?.map((post: any) => {
         const categories = post.categories
           .split(",")
           .map((cat: any) => cat.trim());
-        return (
-          <Link
-            href={`/posts/${post.id}`}
-            key={post.id}
-            className="flex-none md:w-[31%] sm:w-[48%] w-[100%] h-[250px]"
-          >
-            <div className="box border border-zinc-700 p-3 rounded flex flex-col h-full gap-3 text-start">
-              <p className="text-xs opacity-60 overflow-hidden text-ellipsis whitespace-nowrap">
-                {post.author +
-                  " · " +
-                  new Date(post.createdAt).toLocaleDateString()}
-              </p>
-              {post.image && (
-                <div className="relative w-full">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    height="50"
-                    width="50"
-                    className="rounded h-28 w-full object-cover"
-                    unoptimized
-                  />
-                </div>
-              )}
-              <h2 className="text-xl font-bold overflow-hidden text-ellipsis whitespace-nowrap">
-                {post.title}
-              </h2>
+        const isUserPost = loggedUserPosts?.some(
+          (userPost: any) => userPost.id === post.id
+        );
 
-              <div className="flex flex-wrap gap-2 mt-auto">
-                {categories.map((category: string, index: number) => (
-                  <span
-                    key={index}
-                    className="bg-blue-200 text-blue-800 text-xs font-medium py-1 px-2 rounded"
-                  >
-                    {category}
-                  </span>
-                ))}
+        return (
+          <div
+            key={post.id}
+            className="flex-none md:w-[31%] sm:w-[48%] w-[100%] h-[250px] border border-zinc-700 hover:border-zinc-500 transition-colors rounded relative"
+          >
+            <Link
+              href={`/posts/${post.id}`}
+              className="flex flex-col h-full p-3 rounded text-start"
+            >
+              <div className="flex flex-col h-full gap-3">
+                <p className="text-xs opacity-60 overflow-hidden text-ellipsis whitespace-nowrap">
+                  {post.author +
+                    " · " +
+                    new Date(post.createdAt).toLocaleDateString()}
+                </p>
+                {post.image && (
+                  <div className="relative w-full">
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      height="50"
+                      width="50"
+                      className="rounded h-28 w-full object-cover"
+                      unoptimized
+                    />
+                  </div>
+                )}
+                <h2 className="text-xl font-bold overflow-hidden text-ellipsis whitespace-nowrap">
+                  {post.title}
+                </h2>
+                <div className="flex flex-wrap gap-2 mt-auto">
+                  {categories.map((category: string, index: number) => (
+                    <span
+                      key={index}
+                      className="bg-blue-200 text-blue-800 text-xs font-medium py-1 px-2 rounded"
+                    >
+                      {category}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+            {isUserPost && (
+              <div className="absolute bottom-0 left-0 right-0 flex justify-end items-center gap-3 p-2 rounded-b">
+                {isDeleting ? (
+                  <div className="h-12 w-10">
+                    <LoadingComponent />
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleDelete(post.id)}
+                    className="text-red-900 hover:text-red-500 transition-colors"
+                  >
+                    Delete
+                  </button>
+                )}
+                <button
+                  onClick={() => handleEdit(post.id)}
+                  className="text-blue-900 hover:text-blue-500 transition-colors"
+                >
+                  Edit
+                </button>
+              </div>
+            )}
+          </div>
         );
       })}
     </div>

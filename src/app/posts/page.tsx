@@ -4,6 +4,7 @@ import Loading from "../../components/loadingComponent";
 import prisma from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 // npx prisma studio
 // npx prisma db push
@@ -18,6 +19,25 @@ export default async function Page({
   const postsCount = await prisma.post.count();
   const postsPerPage = 6;
   const totalPages = Math.ceil(postsCount / postsPerPage);
+  const currentPage = Math.max(page, 1);
+
+  const { getUser } = getKindeServerSession();
+
+  const user = await getUser();
+
+  const prismaUser = await prisma.user.findFirst({
+    where: { email: user?.email || "" },
+  });
+
+  const loggedUserPosts = await prisma.post.findMany({
+    where: { user: { email: prismaUser?.email || "" } },
+  });
+
+  const posts = await prisma.post.findMany({
+    skip: (currentPage - 1) * postsPerPage,
+    take: postsPerPage,
+    orderBy: { createdAt: "desc" },
+  });
 
   if (page < 1 || page > totalPages) {
     notFound();
@@ -29,16 +49,16 @@ export default async function Page({
         All posts ({postsCount})
       </h2>
       <Suspense fallback={<Loading />}>
-        <PostList page={page} />
+        <PostList loggedUserPosts={loggedUserPosts} posts={posts} />
       </Suspense>
 
       <div className="flex justify-center gap-2 mt-auto">
         <Link
           href={`/posts?page=${page - 1}`}
-          className={`px-4 py-2 rounded ${
+          className={`px-4 py-2 rounded  ${
             page === 1
               ? "bg-gray-700 text-gray-800 cursor-not-allowed"
-              : "bg-zinc-700 text-white"
+              : "bg-zinc-700 text-white hover:bg-gray-700 transition-colors"
           } ${page === 1 ? "pointer-events-none" : ""}`}
         >
           Previous
@@ -53,7 +73,7 @@ export default async function Page({
               className={`px-4 py-2 rounded ${
                 pageNumber === page
                   ? "bg-gray-200 text-black"
-                  : "bg-zinc-700 text-white"
+                  : "bg-zinc-700 text-white hover:bg-gray-700 transition-colors"
               }`}
             >
               {pageNumber}
@@ -66,7 +86,7 @@ export default async function Page({
           className={`px-4 py-2 rounded ${
             page === totalPages
               ? "bg-gray-700 text-gray-800 cursor-not-allowed"
-              : "bg-zinc-700 text-white"
+              : "bg-zinc-700 text-white hover:bg-gray-700 transition-colors"
           } ${page === totalPages ? "pointer-events-none" : ""}`}
         >
           Next
