@@ -42,6 +42,10 @@ export async function deletePost(id: number) {
     data: { deletedAt: new Date() },
   });
 
+  // await prisma.comment.deleteMany({
+  //   where: { postId: id },
+  // });
+
   revalidatePath("/posts");
 }
 

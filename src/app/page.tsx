@@ -14,7 +14,7 @@ export default async function Home() {
     });
 
     return (
-      <main className="text-center pt-24 px-5">
+      <main className="text-center md:pt-24 pt-12 px-5">
         <h1 className="text-3xl font-bold text-gray-400 font-sans">
           Welcome to My Blog
         </h1>

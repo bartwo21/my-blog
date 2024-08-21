@@ -4,7 +4,9 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="mt-auto text-center text-zinc-300 py-5 px-7 border-t border-zinc-700 flex justify-between items-center">
-      <small>made with ❤️ by Bartu Çakır</small>
+      <small className="text-[8px] md:text-xs">
+        made with ❤️ by Bartu Çakır
+      </small>
       <div className="social-icons flex gap-3">
         <Link
           href="https://www.linkedin.com/in/bartwocakir/"
@@ -34,7 +36,9 @@ export default function Footer() {
           />
         </Link>
       </div>
-      <small>&copy; 2024. All rights reserved.</small>
+      <small className="text-[8px] md:text-xs">
+        &copy; 2024. All rights reserved.
+      </small>
     </footer>
   );
 }

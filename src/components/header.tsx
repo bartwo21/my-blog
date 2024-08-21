@@ -62,8 +62,8 @@ export default function Header({
         <Image
           src="https://bytegrad.com/course-assets/youtube/example-logo.png"
           alt="Bartu Logo"
-          width="50"
-          height="50"
+          width="40"
+          height="40"
         />
       </Link>
       <nav>
@@ -71,7 +71,7 @@ export default function Header({
           {links.map(({ href, label }) => (
             <li key={`${href}${label}`}>
               <Link
-                className={` ${
+                className={`text-xs md:text-lg ${
                   pathname === href ? "text-zinc-200" : "text-zinc-400"
                 }`}
                 href={href}
@@ -88,7 +88,7 @@ export default function Header({
               >
                 {user.picture ? (
                   user.picture.startsWith("https://gravatar.com/avatar/") ? (
-                    <p className="text-md font-semibold text-white bg-gray-500 rounded-full w-9 h-9 flex items-center justify-center mr-2">
+                    <p className="font-semibold text-white bg-gray-500 rounded-full w-9 h-9 flex items-center justify-center mr-2 text-xs md:text-lg">
                       {user?.given_name
                         ?.split(" ")
                         .map((name: string) => name[0])
@@ -104,7 +104,7 @@ export default function Header({
                     />
                   )
                 ) : (
-                  <p className="text-md font-semibold text-white bg-gray-500 rounded-full w-9 h-9 flex items-center justify-center mr-2">
+                  <p className="text-md font-semibold text-white bg-gray-500 rounded-full w-9 h-9 flex items-center justify-center mr-2 text-xs md:text-lg">
                     {user?.given_name
                       ?.split(" ")
                       .map((name: string) => name[0])
@@ -132,7 +132,7 @@ export default function Header({
               {dropdownOpen && (
                 <ul className="absolute right-0 mt-2 w-48 border bg-black border-zinc-800 rounded-md shadow-xl">
                   <li>
-                    <LogoutLink className="block px-4 py-2 text-zinc-400">
+                    <LogoutLink className="block px-4 py-2 text-zinc-400 text-xs md:text-lg">
                       Logout
                     </LogoutLink>
                   </li>
@@ -140,10 +140,14 @@ export default function Header({
               )}
             </li>
           ) : (
-            <>
-              <LoginLink className="text-zinc-400">Login</LoginLink>
-              <RegisterLink className="text-zinc-400">Register</RegisterLink>
-            </>
+            <li>
+              <LoginLink className="text-zinc-400 text-xs md:text-lg mr-4">
+                Login
+              </LoginLink>
+              <RegisterLink className="text-zinc-400 text-xs md:text-lg">
+                Register
+              </RegisterLink>
+            </li>
           )}
         </ul>
       </nav>

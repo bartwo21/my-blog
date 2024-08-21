@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { createComment } from "@/actions/actions";
+import { toast } from "react-hot-toast"; // react-hot-toast importu
 
 interface CommentFormProps {
   postId: number;
@@ -15,6 +16,12 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, user }) => {
 
   const handleCommentSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (!user) {
+      toast.error("Please log in to submit a comment.");
+      return;
+    }
+
     if (commentBody.trim() === "") return;
 
     const formData = new FormData();
@@ -35,7 +42,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, user }) => {
   return (
     <form
       onSubmit={handleCommentSubmit}
-      className="mt-3 w-1/3 flex gap-3 relative"
+      className="mt-3 w-1/3 min-w-64 flex gap-3 relative"
     >
       {user?.picture ? (
         user.picture.startsWith("https://gravatar.com/avatar/") ? (
@@ -64,7 +71,8 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, user }) => {
         name="body"
         type="text"
         placeholder="Add a comment"
-        disabled={user === null || user === undefined || user === "" || loading}
+        required
+        disabled={loading}
         className="
           w-full
           h-10
@@ -89,7 +97,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, user }) => {
       <button
         type="submit"
         className="bg-zinc-300 p-[6px] text-white rounded-full absolute right-2 top-[6px] hover:bg-white transition-colors"
-        disabled={user === null || user === undefined || user === "" || loading}
+        disabled={loading}
       >
         {loading ? (
           <div className="w-4 h-4 border-4 border-t-4 border-gray-200 border-opacity-50 rounded-full border-t-zinc-500 animate-spin"></div>
