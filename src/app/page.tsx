@@ -19,12 +19,13 @@ export default async function Home() {
           Welcome to My Blog
         </h1>
         <p className="text-md text-gray-500 leading-relaxed text-left p-8 font-sans font-normal">
-          Are you ready to discover what you've been curious about? Here, you'll
-          find inspiring articles on technology, art, lifestyle, and much more.
-          This page is filled with content tailored to your interests, aiming to
-          offer you new perspectives. Start exploring our blog, packed with the
-          latest trends, practical tips, and in-depth analyses, and add value to
-          your life with the knowledge you'll gain.
+          Are you ready to discover what you&apos;ve been curious about? Here,
+          you&apos;ll find inspiring articles on technology, art, lifestyle, and
+          much more. This page is filled with content tailored to your
+          interests, aiming to offer you new perspectives. Start exploring our
+          blog, packed with the latest trends, practical tips, and in-depth
+          analyses, and add value to your life with the knowledge you&apos;ll
+          gain.
         </p>
         <h2 className="font-bold text-3xl text-start mt-6 mb-6 ml-8">
           Latest Posts
