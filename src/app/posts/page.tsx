@@ -52,7 +52,7 @@ export default async function Page({
         <PostList loggedUserPosts={loggedUserPosts} posts={posts} />
       </Suspense>
 
-      <div className="flex justify-center gap-2 mt-auto">
+      <div className="flex justify-center gap-2 md:mt-auto mt-5">
         <Link
           href={`/posts?page=${page - 1}`}
           className={`px-4 py-2 rounded ${
