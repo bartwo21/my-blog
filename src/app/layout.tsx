@@ -32,6 +32,7 @@ export default async function RootLayout({
     if (!userExists) {
       await prisma.user.create({
         data: {
+          given_name: user?.given_name ?? "",
           email: user?.email ?? "",
         },
       });

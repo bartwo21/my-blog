@@ -13,7 +13,10 @@ datasource db {
 model User{
   id       Int      @id @default(autoincrement())
   email    String   @unique
+  given_name String
   posts    Post[]
+
+  Comment Comment[]
 }
 
 model Post {
@@ -26,7 +29,19 @@ model Post {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   deletedAt  DateTime?
+  comments   Comment[]
   userId     Int
   user       User     @relation(fields: [userId], references: [id])
 
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
 }

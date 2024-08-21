@@ -76,7 +76,7 @@ export default function Header({
                 }`}
                 href={href}
               >
-                {label}{" "}
+                {label}
               </Link>
             </li>
           ))}
@@ -86,14 +86,30 @@ export default function Header({
                 className="text-zinc-400 flex items-center justify-center"
                 onClick={toggleDropdown}
               >
-                {user.picture && (
-                  <Image
-                    src={user.picture}
-                    alt={user.given_name}
-                    width="30"
-                    height="30"
-                    className="rounded-full mr-2"
-                  />
+                {user.picture ? (
+                  user.picture.startsWith("https://gravatar.com/avatar/") ? (
+                    <p className="text-md font-semibold text-white bg-gray-500 rounded-full w-9 h-9 flex items-center justify-center mr-2">
+                      {user?.given_name
+                        ?.split(" ")
+                        .map((name: string) => name[0])
+                        .join("")}
+                    </p>
+                  ) : (
+                    <Image
+                      src={user.picture}
+                      alt={user.given_name}
+                      width="36"
+                      height="36"
+                      className="rounded-full mr-2"
+                    />
+                  )
+                ) : (
+                  <p className="text-md font-semibold text-white bg-gray-500 rounded-full w-9 h-9 flex items-center justify-center mr-2">
+                    {user?.given_name
+                      ?.split(" ")
+                      .map((name: string) => name[0])
+                      .join("")}
+                  </p>
                 )}
                 {user.given_name}
                 <svg

@@ -45,7 +45,7 @@ export default async function Page({
 
   return (
     <div className="text-center py-16 px-5 flex flex-col flex-grow">
-      <h2 className="text-2xl md:text-5xl font-bold mb-5">
+      <h2 className="text-2xl md:text-3xl tracking-wider mb-5">
         All posts ({postsCount})
       </h2>
       <Suspense fallback={<Loading />}>

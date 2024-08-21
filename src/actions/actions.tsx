@@ -21,7 +21,7 @@ export async function createPost(formData: FormData, imageUrl: string) {
     where: { email: user?.email ?? "" },
   });
 
-  await prisma.post.create({
+  const newPost = await prisma.post.create({
     data: {
       title,
       body,
@@ -33,6 +33,7 @@ export async function createPost(formData: FormData, imageUrl: string) {
   });
 
   revalidatePath("/posts");
+  redirect(`/posts/${newPost.id}`);
 }
 
 export async function deletePost(id: number) {
@@ -73,4 +74,37 @@ export async function updatePost(
   });
 
   redirect(`/posts/${id}`);
+}
+
+export async function createComment(postId: number, formData: FormData) {
+  const { isAuthenticated, getUser } = getKindeServerSession();
+
+  if (!isAuthenticated) {
+    redirect("/login");
+  }
+
+  const user = await getUser();
+  const body = formData.get("body") as string;
+
+  if (!user?.email) {
+    throw new Error("User email is not available");
+  }
+
+  const prismaUser = await prisma.user.findFirst({
+    where: { email: user.email },
+  });
+
+  if (!prismaUser) {
+    throw new Error("User not found");
+  }
+
+  await prisma.comment.create({
+    data: {
+      body,
+      postId,
+      userId: prismaUser.id,
+    },
+  });
+
+  revalidatePath(`/posts/${postId}`);
 }

@@ -52,20 +52,20 @@ export default function PostActions({ postId }: { postId: number }) {
   };
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       {isDeleting ? (
         <LoadingComponent />
       ) : (
         <>
           <button
             onClick={handleDelete}
-            className="text-red-900 hover:text-red-500 transition-colors"
+            className="text-red-900 hover:text-red-700 transition-colors text-sm"
           >
             Delete
           </button>
           <Link
             href={`/posts/${postId}/edit`}
-            className="text-blue-900 hover:text-blue-500 transition-colors"
+            className="text-blue-900 hover:text-blue-700 transition-colors text-sm"
           >
             Edit
           </Link>

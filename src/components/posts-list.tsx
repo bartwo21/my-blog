@@ -24,8 +24,6 @@ export default function PostList({
           (userPost: any) => userPost.id === post.id
         );
 
-        console.log(categories[0]);
-
         return (
           <div
             key={post.id}
@@ -36,10 +34,11 @@ export default function PostList({
               className="flex flex-col h-full p-3 rounded text-start"
             >
               <div className="flex flex-col h-full gap-3">
-                <p className="text-xs opacity-60 overflow-hidden text-ellipsis whitespace-nowrap">
+                <p className="text-xs opacity-60 overflow-hidden text-ellipsis whitespace-nowrap flex gap-1">
                   {post.author +
                     " · " +
-                    new Date(post.createdAt).toLocaleDateString()}
+                    new Date(post.createdAt).toLocaleDateString()}{" "}
+                  {isUserPost && <span className="font-bold"> · You</span>}
                 </p>
                 {post.image && (
                   <div className="relative w-full">
@@ -50,6 +49,7 @@ export default function PostList({
                       width="50"
                       className="rounded h-28 w-full object-cover"
                       unoptimized
+                      priority
                     />
                   </div>
                 )}

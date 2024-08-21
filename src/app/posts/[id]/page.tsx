@@ -3,6 +3,8 @@ import prisma from "@/lib/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import CommentsSection from "@/components/commentsSection";
+import CommentForm from "@/components/commentForm";
 
 export default async function Page({
   params,
@@ -12,11 +14,11 @@ export default async function Page({
   };
 }) {
   const { getUser } = getKindeServerSession();
-
   const user = await getUser();
 
   const post = await prisma.post.findUnique({
     where: { id: parseInt(params.id) },
+    include: { comments: { include: { user: true } } },
   });
 
   const prismaUser = await prisma.user.findFirst({
@@ -36,8 +38,9 @@ export default async function Page({
     : [];
 
   if (!post || post.deletedAt) notFound();
+
   return (
-    <div className="relative border border-zinc-700 p-6 rounded flex flex-col justify-between gap-3 text-start mx-7 my-16 flex-grow">
+    <div className="relative px-2 rounded flex flex-col justify-between gap-3 text-start mx-7 my-14 flex-grow">
       <p className="text-xs opacity-60 overflow-hidden text-ellipsis whitespace-normal">
         {post.author + " · " + new Date(post.createdAt).toLocaleDateString()}
       </p>
@@ -57,7 +60,7 @@ export default async function Page({
           />
         </div>
       )}
-      <div className="flex flex-wrap gap-2 mt-auto h-full">
+      <div className="flex flex-wrap gap-2 mt-auto h-full border-b py-4 pb-6 border-zinc-700">
         {categories.map((category: string, index: number) => (
           <span
             key={index}
@@ -72,6 +75,11 @@ export default async function Page({
           <PostActions postId={post.id} />
         </div>
       )}
+      <CommentsSection comments={post.comments} />
+      {!user && (
+        <p className="text-zinc-600">You must be logged in to comment.</p>
+      )}
+      <CommentForm postId={post.id} user={user} />
     </div>
   );
 }
