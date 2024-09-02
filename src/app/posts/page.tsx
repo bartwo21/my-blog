@@ -1,10 +1,9 @@
 import PostList from "@/components/posts-list";
 import { Suspense } from "react";
-import Loading from "../../components/loadingComponent";
-import prisma from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import LoadingComponent from "../../components/loadingComponent";
+import { getPosts } from "../../actions/actions";
 
 export default async function Page({
   searchParams,
@@ -13,31 +12,7 @@ export default async function Page({
 }) {
   const page = parseInt(searchParams.page as string) || 1;
 
-  const postsCount = await prisma.post.count({
-    where: { deletedAt: null },
-  });
-
-  const postsPerPage = 6;
-  const totalPages = Math.ceil(postsCount / postsPerPage);
-  const currentPage = Math.max(page, 1);
-
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
-
-  const prismaUser = await prisma.user.findFirst({
-    where: { email: user?.email || "" },
-  });
-
-  const loggedUserPosts = await prisma.post.findMany({
-    where: { user: { email: prismaUser?.email || "" } },
-  });
-
-  const posts = await prisma.post.findMany({
-    where: { deletedAt: null },
-    skip: (currentPage - 1) * postsPerPage,
-    take: postsPerPage,
-    orderBy: { createdAt: "desc" },
-  });
+  const { totalPages, posts } = await getPosts(page);
 
   if (page < 1 || page > totalPages) {
     notFound();
@@ -45,11 +20,9 @@ export default async function Page({
 
   return (
     <div className="text-center py-16 px-5 flex flex-col flex-grow">
-      <h2 className="text-2xl md:text-3xl tracking-wider mb-5">
-        All posts ({postsCount})
-      </h2>
-      <Suspense fallback={<Loading />}>
-        <PostList loggedUserPosts={loggedUserPosts} posts={posts} />
+      <h2 className="text-2xl md:text-3xl tracking-wider mb-5">All posts</h2>
+      <Suspense key={page} fallback={<LoadingComponent />}>
+        <PostList posts={posts} />
       </Suspense>
 
       <div className="flex justify-center gap-2 md:mt-auto mt-5">

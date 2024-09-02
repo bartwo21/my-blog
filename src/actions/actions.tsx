@@ -5,6 +5,36 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+export async function getPosts(page: number) {
+  const postsCount = await prisma.post.count({
+    where: { deletedAt: null },
+  });
+
+  const postsPerPage = 6;
+  const totalPages = Math.ceil(postsCount / postsPerPage);
+  const currentPage = Math.max(page, 1);
+
+  const posts = await prisma.post.findMany({
+    where: { deletedAt: null },
+    skip: (currentPage - 1) * postsPerPage,
+    take: postsPerPage,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return { postsCount, postsPerPage, totalPages, currentPage, posts };
+}
+
+export async function getLoggedUserPosts(email: string) {
+  return await prisma.post.findMany({
+    where: { user: { email } },
+  });
+}
+
+export async function getUserFromSession() {
+  const { getUser } = getKindeServerSession();
+  return await getUser();
+}
+
 export async function createPost(formData: FormData, imageUrl: string) {
   const { isAuthenticated, getUser } = getKindeServerSession();
 

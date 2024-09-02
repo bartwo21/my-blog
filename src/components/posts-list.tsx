@@ -1,17 +1,13 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import PostActions from "./postAction";
+import { getLoggedUserPosts, getUserFromSession } from "@/actions/actions";
 
-export default function PostList({
-  loggedUserPosts,
-  posts,
-}: {
-  loggedUserPosts?: any;
-  posts?: any;
-}) {
+export default async function PostList({ posts }: { posts?: any }) {
+  const user = await getUserFromSession();
+  const loggedUserPosts = await getLoggedUserPosts(user?.email || "");
+
   const filteredPosts = posts?.filter((post: any) => !post.deletedAt);
 
   return (
